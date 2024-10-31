@@ -1,0 +1,39 @@
+
+&spaceIn   	
+NkxG    = 3000
+NkyG    = 3000
+kxMin   = 0.12566
+kyMin   = 0.12566
+dt      = 1.0e-4
+endTime = 0.0160
+nFrames = 40
+xyProcs = 32, 32
+/
+
+&sourceIn
+Lnorm      = 2837.9148
+omSte      = 3.5237e-4
+omde       = 2.5627e-3
+tau        = 1.0
+mu         = 60.59
+deltae     = 2.0
+deltaPerpe = 1.0
+eta_e      = 49.68
+deltai     = 2.0
+deltaPerpi = 1.0
+eta_i      = 49.68
+lambdaD    = 0.0
+hDiffOrder = 16
+hDiffne    = 0.040
+hDiffTe    = 0.040
+hDiffni    = 0.040
+hDiffTi    = 0.040
+/
+
+&icsIn
+initialOp  =  1
+initAuxX   = -1
+initAuxY   = -1
+initA      = 2.5e-5
+/
+
