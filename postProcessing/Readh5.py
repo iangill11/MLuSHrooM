@@ -2,7 +2,7 @@ import h5py
 import numpy as np
 
 
-hdf5_filepath = 'path/to/your/test_MuSHrooM_processed-60024954.h5'
+hdf5_filepath = 'C:/Users/lukas/OneDrive - Yale University/Personal/Studies/Semester 3/S&DS 689/Project/test_datah5.h5'
 
 # Open the HDF5 file in read mode
 with h5py.File(hdf5_filepath, 'r') as f:
