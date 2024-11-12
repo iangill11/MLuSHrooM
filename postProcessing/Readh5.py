@@ -12,6 +12,7 @@ with h5py.File(hdf5_filepath, 'r') as f:
     tempElc_data = f['tempElc_data'][:]
     denElc_data = f['denElc_data'][:]
     phi_data = f['phi_data'][:]
+    grid = f['X'][:]
     times = f['times'][:]
     
 
