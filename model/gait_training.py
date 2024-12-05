@@ -1,6 +1,7 @@
 # general imports
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import sys
 import os
 
@@ -18,7 +19,7 @@ from torch.utils.data import DataLoader
 
 
 # Set Script ID
-ID = 1
+ID = 2
 
 # make directory for saving files
 dir_name = 'CVAE_{}'.format(ID)
@@ -35,13 +36,13 @@ os.chdir(script_dir)
 """ Set Hyperparameters """
 # model training
 lr_dnn = 0.001
-num_epochs_dnn = 500
+num_epochs_dnn = 1
 
 # model data
 batch_size_cvae = 32
 batch_size_dnn = 32
 input_dim = 64 # for square images
-latent_dim = 128
+latent_dim = 64
 
 """ Manual Parameters (Careful with these)"""
 N_train_batches = 38
@@ -154,8 +155,8 @@ class CVAE(nn.Module):
     
 # Load the model
 model = CVAE(latent_dim=latent_dim)
-model.load_state_dict(torch.load('CVAE Training/CVAE_{}/CVAE_model_{}.pth'.format(ID, ID)))
-
+#model.load_state_dict(torch.load('CVAE Training/CVAE_{}/CVAE_model_{}.pth'.format(ID, ID)))
+model.load_state_dict(torch.load('CVAE Training/CVAE_3/CVAE_model_3.pth'))
 
 """ Prepare Test and Train data for the DNN model """
 # initialize empty tensors to store z-vectors
@@ -184,26 +185,33 @@ print("Training data shape: ", z_train_data.shape)
 print("Test data shape: ", z_test_data.shape)
 
 
+# print first 10 z-vectors
+print("First 10 z-vectors: ", z_train_data[:10])
+ 
+z_train_numpy = z_train_data.numpy()
+z_test_numpy = z_test_data.numpy()
+
+
 # define class for dataset
 class ZDataset(Dataset):
     def __init__(self, z_data):
         self.data = z_data
 
     def __len__(self):
-        return (self.data.shape[0] - 1) # the sataset consists of samples and targets, but there are only n-1 targets
+        return (self.data.shape[0] - 1) # the dataset consists of samples and targets, but there are only n-1 targets
 
     def __getitem__(self, idx):
-        sample = self.data[idx]
-        target = self.data[idx + 1]
+        sample = self.data[idx, :]
+        target = self.data[idx + 1, :]
         return sample, target
     
 # train data loader
 z_train = ZDataset(z_train_data)
-z_train_loader = DataLoader(z_train, batch_size=batch_size_dnn, shuffle=False)
+z_train_loader = DataLoader(z_train, batch_size=batch_size_dnn, shuffle=True)
 
 # test data loader
 z_test = ZDataset(z_test_data)
-z_test_loader = DataLoader(z_test, batch_size=batch_size_dnn,  shuffle=False)
+z_test_loader = DataLoader(z_test, batch_size=batch_size_dnn,  shuffle=True)
 
 
 """ Define the DNN model """
@@ -250,6 +258,17 @@ for epoch in range(num_epochs_dnn):
         loss.backward()
         train_loss += loss.item()
         optimizer.step()
+        
+        # # get one sample vector and target vector
+        # if i == 0:
+        #     sample_arr = sample[:3].detach().numpy()
+        #     target_arr = target[:3].detach().numpy()
+        #     output_arr = output[:3].detach().numpy()
+            
+        #     print("Sample vector: ", sample_arr[0, 1:10])
+        #     print("Target vector: ", target_arr[0, 1:10])
+        #     print("Output vector: ", output_arr[0, 1:10])
+
     
     avg_loss = train_loss / len(z_train_loader.dataset)
     # open file to write loss
@@ -259,7 +278,7 @@ for epoch in range(num_epochs_dnn):
     
 # plot loss and save image
 plt.figure(figsize=(10, 8))
-plt.plot(losses, color='blue')
+plt.plot(losses[10:], color='blue')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('DNN Loss')

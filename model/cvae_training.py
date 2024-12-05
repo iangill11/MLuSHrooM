@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 
 
 # Set Script ID
-ID = 2
+ID = 3
 
 # make directory for saving files
 dir_name = 'CVAE_{}'.format(ID)
@@ -38,7 +38,7 @@ num_epochs_cvae = 1000
 # model data
 batch_size_cvae = 32
 input_dim = 64 # for square images
-latent_dim = 128
+latent_dim = 64
 
 # loss weighting
 w_phi = 1.0
